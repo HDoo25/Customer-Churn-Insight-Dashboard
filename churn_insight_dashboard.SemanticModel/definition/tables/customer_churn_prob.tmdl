@@ -1,0 +1,343 @@
+table customer_churn_prob
+	lineageTag: 6b6e02cd-0ac7-4878-ab60-d7aea87e95f2
+
+	measure ChurnRate = DIVIDE(SUM(customer_churn_prob[Exited]), COUNT(customer_churn_prob[Exited]))
+		lineageTag: b07ada7a-ef8b-4a74-9e90-6dd1041c6a6f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Revenue_at_risk = CALCULATE(SUM(customer_churn_prob[CustomerValue]), customer_churn_prob[Churn_prob] >= 0.7)
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: ca64c6e4-2205-41c7-80a0-1609e8be994b
+
+	measure 'High Risk %' = DIVIDE([High-Risk Customers], COUNTROWS(customer_churn_prob))
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: da656c6c-3f68-435e-8e2f-72d040d04483
+
+	measure 'High-Risk Customers' = CALCULATE(COUNTROWS(customer_churn_prob), customer_churn_prob[Risk_level] = "High")
+		formatString: #,0
+		lineageTag: e7e86438-937a-498b-b593-604c27d6cf00
+
+	measure 'Potential Savings' = customer_churn_prob[High risk Exposure] * (SELECTEDVALUE('Churn Reduction %'[Churn Reduction %])/100)
+		lineageTag: fbf0013f-0307-4a18-b31f-eae83dc7c2a6
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Inactive Churn%' =
+			
+			DIVIDE(
+			    CALCULATE(
+			        COUNTROWS(customer_churn_prob),
+			        customer_churn_prob[Exited] = 1,
+			        customer_churn_prob[IsActiveMember] = 0
+			    ),
+			    CALCULATE(
+			        COUNT(customer_churn_prob[Customer_index]),
+			        'customer_churn_prob'[IsActiveMember] = 0
+			    )
+			)
+		lineageTag: 6ece6b44-cd98-4418-b234-5b3d3b39ba5e
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Active Churn Rate' =
+			
+			CALCULATE(
+			    customer_churn_prob[ChurnRate],
+			    customer_churn_prob[IsActiveMember] = 1
+			)
+		lineageTag: d16809d4-9bdd-4d31-995f-5c73a56c7485
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Churn Rate Gap' = [Inactive Churn%] - [Active Churn Rate]
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 5c692b80-70fe-4235-81ed-21df606e0976
+
+	measure 'High risk Exposure' =
+			
+			SUMX(
+			    FILTER(customer_churn_prob,
+			        'customer_churn_prob'[churn_prob] >= 0.7
+			    ),
+			    customer_churn_prob[CustomerValue] *
+			    customer_churn_prob[Churn_prob]
+			)
+		lineageTag: 7a506b9c-28bc-492d-98be-cd8e2a7cfc20
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CreditScore
+		dataType: int64
+		formatString: 0
+		lineageTag: 88652f7d-64dd-419e-a7b2-e211807d432d
+		summarizeBy: sum
+		sourceColumn: CreditScore
+
+		annotation SummarizationSetBy = Automatic
+
+	column Geography
+		dataType: string
+		lineageTag: fe152325-30a3-450f-996f-0657ce0a128d
+		summarizeBy: none
+		sourceColumn: Geography
+
+		annotation SummarizationSetBy = Automatic
+
+	column Gender
+		dataType: string
+		lineageTag: 3595c4bf-a5fc-41e1-83e1-51d3b8be2508
+		summarizeBy: none
+		sourceColumn: Gender
+
+		annotation SummarizationSetBy = Automatic
+
+	column Age
+		dataType: int64
+		formatString: 0
+		lineageTag: e68f4090-13ed-4e68-908c-f668b7e7f946
+		summarizeBy: sum
+		sourceColumn: Age
+
+		annotation SummarizationSetBy = Automatic
+
+	column Tenure
+		dataType: int64
+		formatString: 0
+		lineageTag: 69bc7329-d784-4d97-87d9-b6386c4b4987
+		summarizeBy: sum
+		sourceColumn: Tenure
+
+		annotation SummarizationSetBy = Automatic
+
+	column Balance
+		dataType: double
+		lineageTag: 6363e2e6-dc02-4a69-b1db-85d6fbe42690
+		summarizeBy: sum
+		sourceColumn: Balance
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column NumOfProducts
+		dataType: int64
+		formatString: 0
+		lineageTag: 9e7f896e-393f-40d3-8d06-e2203e0377a8
+		summarizeBy: sum
+		sourceColumn: NumOfProducts
+
+		annotation SummarizationSetBy = Automatic
+
+	column HasCrCard
+		dataType: int64
+		formatString: 0
+		lineageTag: 97d40a27-fd78-4244-bed1-82a30d15b909
+		summarizeBy: sum
+		sourceColumn: HasCrCard
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsActiveMember
+		dataType: int64
+		formatString: 0
+		lineageTag: 844452bb-17c8-4ba3-a1ce-dc31967ba3d5
+		summarizeBy: sum
+		sourceColumn: IsActiveMember
+
+		annotation SummarizationSetBy = Automatic
+
+	column EstimatedSalary
+		dataType: double
+		lineageTag: 02339e21-a44e-4c0c-8690-04b8ab01bc05
+		summarizeBy: sum
+		sourceColumn: EstimatedSalary
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Exited
+		dataType: int64
+		formatString: #,0
+		lineageTag: cc01ab88-150a-4479-a05b-bdede777c137
+		summarizeBy: sum
+		sourceColumn: Exited
+
+		annotation SummarizationSetBy = Automatic
+
+	column id
+		dataType: int64
+		formatString: 0
+		lineageTag: e6c427a5-a7c7-43fc-9e24-02f888b60df5
+		summarizeBy: sum
+		sourceColumn: id
+
+		annotation SummarizationSetBy = Automatic
+
+	column Customer_index
+		dataType: int64
+		formatString: 0
+		lineageTag: feee0851-c86e-4383-bf6b-f8167bf6fad2
+		summarizeBy: none
+		sourceColumn: Customer_index
+
+		annotation SummarizationSetBy = Automatic
+
+	column Age_band
+		dataType: string
+		lineageTag: 5a3cda54-011d-4c89-98a6-32e246397c5c
+		summarizeBy: none
+		sourceColumn: Age_band
+
+		annotation SummarizationSetBy = Automatic
+
+	column Tenure_band
+		dataType: string
+		lineageTag: 1897909b-3397-44a5-b06d-8b3af45b3c3f
+		summarizeBy: none
+		sourceColumn: Tenure_band
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column Balance_flag
+		dataType: int64
+		formatString: 0
+		lineageTag: 48fd65e1-c5b7-4860-ba66-f3d27a44b05f
+		summarizeBy: sum
+		sourceColumn: Balance_flag
+
+		annotation SummarizationSetBy = Automatic
+
+	column Multi_product_flag
+		dataType: int64
+		formatString: 0
+		lineageTag: 3f6b7574-6d89-422e-aebc-4b17ef82dc7b
+		summarizeBy: sum
+		sourceColumn: Multi_product_flag
+
+		annotation SummarizationSetBy = Automatic
+
+	column Churn_prob
+		dataType: double
+		lineageTag: 0e0335ed-c3e4-4d58-b3f1-371720447843
+		summarizeBy: sum
+		sourceColumn: Churn_prob
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+		annotation __PBI_SemanticLinks = [{"LinkTarget":{"TableName":"customer_churn_prob","TableItemName":"Churn_prob (bins)","ObjectType":4},"LinkType":"UsedInGroup"}]
+
+	column Risk_level
+		dataType: string
+		lineageTag: 4e4c0898-e338-4e51-b266-11b88250a14d
+		summarizeBy: none
+		sourceColumn: Risk_level
+		sortByColumn: Risk_Sort
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerValue = (customer_churn_prob[Balance]*0.10) + (customer_churn_prob[NumOfProducts]*300) + (customer_churn_prob[IsActiveMember] * 200)
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: a24cf534-8d18-4da6-8711-27f61522e1b3
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Expected Loss' = SUMX(customer_churn_prob, customer_churn_prob[CustomerValue] * customer_churn_prob[Churn_prob])
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		lineageTag: 1d5de24a-e5ba-4fb2-adac-61b03ce852c5
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Churn_prob (bins)' =
+			IF(
+				ISBLANK('customer_churn_prob'[Churn_prob]),
+				BLANK(),
+				IF(
+					'customer_churn_prob'[Churn_prob] >= 0,
+					ROUNDDOWN('customer_churn_prob'[Churn_prob] / 0.1, 0) * 0.1,
+					ROUNDUP('customer_churn_prob'[Churn_prob] / 0.1, 0) * 0.1
+				)
+			)
+		lineageTag: eeeff99d-cf73-47de-b0e4-f4594840c188
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "customer_churn_prob"
+				          }
+				        },
+				        "Property": "Churn_prob"
+				      }
+				    }
+				  ],
+				  "binningMetadata": {
+				    "binSize": {
+				      "value": 0.1,
+				      "unit": 0
+				    }
+				  }
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"c","Entity":"customer_churn_prob"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"c"}},"Property":"Churn_prob"}}],"BinItem":{"Expression":{"Floor":{"Expression":{"Column":{"Expression":{"SourceRef":{"Source":"c"}},"Property":"Churn_prob"}},"Size":0.1}}}}
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Risk_Sort =
+			
+			SWITCH(
+			    TRUE(),
+			    ISBLANK('customer_churn_prob'[Churn_Prob]), 0,
+			    'customer_churn_prob'[Churn_Prob] <= 0.4, 1,
+			    'customer_churn_prob'[Churn_Prob] <= 0.7, 2,
+			    3
+			)
+		formatString: 0
+		lineageTag: 57947d2f-2469-4e16-9ae2-e0b4b5e15342
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Credit Score Band' =
+			
+			SWITCH(
+			    TRUE(),
+			    ISBLANK('customer_churn_prob'[CreditScore]), "Unknown",
+			    'customer_churn_prob'[CreditScore] < 500, "<500",
+			    'customer_churn_prob'[CreditScore] < 650, "500-649",
+			    'customer_churn_prob'[CreditScore] < 750, "650-749",
+			    "750+"
+			)
+		lineageTag: 5fe400fc-e426-4186-bb57-846c66aa7814
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition customer_churn_prob = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\honey\Documents\GitHub\Customer-Churn-Insight-Dashboard\data\customer_churn_prob.csv"),[Delimiter=",", Columns=19, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"CreditScore", Int64.Type}, {"Geography", type text}, {"Gender", type text}, {"Age", Int64.Type}, {"Tenure", Int64.Type}, {"Balance", type number}, {"NumOfProducts", Int64.Type}, {"HasCrCard", Int64.Type}, {"IsActiveMember", Int64.Type}, {"EstimatedSalary", type number}, {"Exited", Int64.Type}, {"id", Int64.Type}, {"Customer_index", Int64.Type}, {"Age_band", type text}, {"Tenure_band", type text}, {"Balance_flag", Int64.Type}, {"Multi_product_flag", Int64.Type}, {"Churn_prob", type number}, {"Risk_level", type text}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

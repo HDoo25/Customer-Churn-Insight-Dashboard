@@ -1,0 +1,162 @@
+table high_risk_customers
+	lineageTag: 71a3aa53-df8e-4dda-bc21-b83dc5f0339d
+
+	column CreditScore
+		dataType: int64
+		formatString: 0
+		lineageTag: 9a40e5d8-1f8a-442b-b77a-beef85bbb819
+		summarizeBy: sum
+		sourceColumn: CreditScore
+
+		annotation SummarizationSetBy = Automatic
+
+	column Age
+		dataType: int64
+		formatString: 0
+		lineageTag: b9d9a0f0-9f13-4759-b4c4-a8d8ef33d074
+		summarizeBy: sum
+		sourceColumn: Age
+
+		annotation SummarizationSetBy = Automatic
+
+	column Tenure
+		dataType: int64
+		formatString: 0
+		lineageTag: f47dcc45-d11e-42ba-bc33-4a7c2ccb1f78
+		summarizeBy: sum
+		sourceColumn: Tenure
+
+		annotation SummarizationSetBy = Automatic
+
+	column Balance
+		dataType: double
+		lineageTag: 9cc6948e-a5c6-4623-98f2-d4784deadd04
+		summarizeBy: sum
+		sourceColumn: Balance
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column NumOfProducts
+		dataType: int64
+		formatString: 0
+		lineageTag: 2354f383-9168-4efa-ab2f-73f99fcca38c
+		summarizeBy: sum
+		sourceColumn: NumOfProducts
+
+		annotation SummarizationSetBy = Automatic
+
+	column HasCrCard
+		dataType: int64
+		formatString: 0
+		lineageTag: d2864fd5-0f08-494e-9c8b-9866188fac94
+		summarizeBy: sum
+		sourceColumn: HasCrCard
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsActiveMember
+		dataType: int64
+		formatString: 0
+		lineageTag: d0b86173-36d5-4b7f-8a75-13d326ba6059
+		summarizeBy: sum
+		sourceColumn: IsActiveMember
+
+		annotation SummarizationSetBy = Automatic
+
+	column EstimatedSalary
+		dataType: double
+		lineageTag: 8caba9bd-a48e-4287-9eb6-5e949a12df31
+		summarizeBy: sum
+		sourceColumn: EstimatedSalary
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Customer_index
+		dataType: int64
+		formatString: 0
+		lineageTag: 84eec25f-b4ac-4822-88a0-c9d4df8a1289
+		summarizeBy: none
+		sourceColumn: Customer_index
+
+		annotation SummarizationSetBy = Automatic
+
+	column Balance_flag
+		dataType: int64
+		formatString: 0
+		lineageTag: aa7a88aa-46df-4402-9e4f-b9540115e907
+		summarizeBy: sum
+		sourceColumn: Balance_flag
+
+		annotation SummarizationSetBy = Automatic
+
+	column Multi_product_flag
+		dataType: int64
+		formatString: 0
+		lineageTag: 942a4018-0511-419e-af3d-01115581aebf
+		summarizeBy: sum
+		sourceColumn: Multi_product_flag
+
+		annotation SummarizationSetBy = Automatic
+
+	column Geography_Germany
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: eb5280b1-fe7f-4786-be2d-98e59bc53096
+		summarizeBy: none
+		sourceColumn: Geography_Germany
+
+		annotation SummarizationSetBy = Automatic
+
+	column Geography_Spain
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 7e649fba-21b8-40fa-b050-65b96a8b919a
+		summarizeBy: none
+		sourceColumn: Geography_Spain
+
+		annotation SummarizationSetBy = Automatic
+
+	column Gender_Male
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 8fe8ba11-d17a-4d4f-bd4b-adee78f7c51c
+		summarizeBy: none
+		sourceColumn: Gender_Male
+
+		annotation SummarizationSetBy = Automatic
+
+	column churn_probability
+		dataType: double
+		lineageTag: bcc042d0-8514-43a3-856e-a5d76539a63c
+		summarizeBy: sum
+		sourceColumn: churn_probability
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column actual
+		dataType: int64
+		formatString: 0
+		lineageTag: c854a23d-8624-4f47-a689-189d5daf399b
+		summarizeBy: sum
+		sourceColumn: actual
+
+		annotation SummarizationSetBy = Automatic
+
+	partition high_risk_customers = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\honey\Documents\GitHub\Customer-Churn-Insight-Dashboard\data\high_risk_customers.csv"),[Delimiter=",", Columns=16, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"CreditScore", Int64.Type}, {"Age", Int64.Type}, {"Tenure", Int64.Type}, {"Balance", type number}, {"NumOfProducts", Int64.Type}, {"HasCrCard", Int64.Type}, {"IsActiveMember", Int64.Type}, {"EstimatedSalary", type number}, {"Customer_index", Int64.Type}, {"Balance_flag", Int64.Type}, {"Multi_product_flag", Int64.Type}, {"Geography_Germany", type logical}, {"Geography_Spain", type logical}, {"Gender_Male", type logical}, {"churn_probability", type number}, {"actual", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+
