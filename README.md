@@ -21,7 +21,9 @@ This project addresses the following business questions:
 - High-risk customers account for a concentrated portion of projected revenue exposure.
 ***
 ### Power BI Dashboard
-(photos here)
+![Executive Summary](dashboard/Summary.png)
+![EDA View](dashboard/EDA.png)
+![Predictions](dashboard/Predictions.png)
 ***
 ### Methodology
 ***
