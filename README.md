@@ -39,8 +39,7 @@ Key findings:
 - Inactive members exhibit significantly higher churn rates
 - Customers with 3-4 products show disproportionately high churn
 - Age 45-54 segment shows elevated churn likelihood
-- Geographic difference reveal systematic churn gaps (?)
-EDA focused on identifying **churn rate gaps (percentage-point differences from overall churn)** to surface actionable segments.
+- Geographic difference reveal systematic churn gaps EDA focused on identifying **churn rate gaps (percentage-point differences from overall churn)** to surface actionable segments.
 ***
 ### 3. Predictive Modeling
 Models evaluated:
@@ -50,7 +49,7 @@ Performance Metrics:
 - ROC-AUC > 0.80
 - Random Forest selected for deployment due to stronger predictive performance
 
-\* The model generates churn probability scores for each customer.
+\*The model generates churn probability scores for each customer.
 ***
 ### 4. Risk Segmentation
 Customers were categorized into risk tiers based on churn probability:
