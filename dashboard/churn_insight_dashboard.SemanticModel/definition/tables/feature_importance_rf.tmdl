@@ -1,0 +1,33 @@
+table feature_importance_rf
+	lineageTag: 602374d3-492c-49c3-a9e9-f923642308b9
+
+	column Feature
+		dataType: string
+		lineageTag: a022eeda-aaec-4b4b-b6bb-bd8d504cc2f6
+		summarizeBy: none
+		sourceColumn: Feature
+
+		annotation SummarizationSetBy = Automatic
+
+	column Importance
+		dataType: double
+		lineageTag: 32b5585c-bb41-4345-a45c-573d178dd592
+		summarizeBy: sum
+		sourceColumn: Importance
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition feature_importance_rf = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("C:\Users\honey\Documents\GitHub\Customer-Churn-Insight-Dashboard\data\feature_importance_rf.csv"),[Delimiter=",", Columns=2, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Feature", type text}, {"Importance", type number}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

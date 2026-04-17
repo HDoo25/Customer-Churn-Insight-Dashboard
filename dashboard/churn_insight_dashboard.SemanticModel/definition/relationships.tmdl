@@ -1,0 +1,6 @@
+relationship ae455de8-894d-50f5-48a0-751eea0b4f61
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: high_risk_customers.Customer_index
+	toColumn: customer_churn_prob.Customer_index
+
